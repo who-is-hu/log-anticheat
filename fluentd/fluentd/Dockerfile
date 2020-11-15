@@ -19,7 +19,7 @@ RUN buildDeps="sudo make gcc g++ libc-dev" \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
+# USER fluent
+
 COPY fluent.conf /fluentd/etc/
 COPY entrypoint.sh /bin/
-
-USER fluent

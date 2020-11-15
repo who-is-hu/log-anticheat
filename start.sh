@@ -3,14 +3,14 @@
 start() {
     echo "start log anticheat..."
     set -x
-    docker-compose -f kafka-docker-compose/docker-compose.yml -f elastic-kibana/docker-compose.yaml up -d
+    docker-compose -f kafka-docker-compose/docker-compose.yml -f elastic-kibana/docker-compose.yaml -f fluentd/docker-compose.yaml up -d --build
     set +x
 }
 
 down() {
     echo "down docker containers of log anticheat..."
     set -x
-    docker-compose -f kafka-docker-compose/docker-compose.yml -f elastic-kibana/docker-compose.yaml down
+    docker-compose -f kafka-docker-compose/docker-compose.yml -f elastic-kibana/docker-compose.yaml -f fluentd/docker-compose.yaml down --volume
     set +x
 }
 
