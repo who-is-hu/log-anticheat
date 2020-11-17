@@ -1,38 +1,56 @@
 from kafka import KafkaConsumer
-from json import loads
+from elasticsearch import Elasticsearch
+from elasticsearch import helpers
+import json
 import requests
 
+# elasticsearch 서버 정보
+es = Elasticsearch("http://localhost:9200")
+# es.info()
+index = "test"
+
+
+# kafka setup
 bootstrap_servers = ["localhost:9092"]
 topic_name = 'parsed-topic'
 group_name = 'group1'
-
-# elasticsearch 서버 정보
-elastic_server = 'http://localhost:9200'
-
 consumer = KafkaConsumer(topic_name, 
                         bootstrap_servers=bootstrap_servers, 
                         enable_auto_commit=False,
                         group_id=group_name
                         )
-def consume_loop():
-    while True:
-        msg_pack = consumer.poll(timeout_ms=500)
 
+def fetchAll(_index):
+    res = es.search(index=_index, body={
+        "query":{"match_all":{}}
+    })
+    docs = []
+    for dicto in res['hits']['hits']:
+        docs.append(dicto['_source'])
+    return docs
+    
+def consume_loop():
+    docs = fetchAll('test')
+    print(docs)
+
+    while True:
+        msg_pack = consumer.poll(timeout_ms=1000)
         for partition_batch in msg_pack.values():
             for msg in partition_batch:
                 message = msg.value.decode('utf-8')
-                print(message)
-                json_data = loads(message)
-                send_json_to_elastic(json_data)
+                try:
+                    json_data = json.loads(message)
+                    res = es.index(index=index, doc_type="_doc", body=json_data)
+                    print(res)
+                except Exception as e:
+                    print(e)
+
+        if len(msg_pack) != 0:
+            print("========================")
+            docs = fetchAll('test')
+            print(docs)
+
         consumer.commit()
-
-def send_json_to_elastic(json_data):
-    # test uri
-    data_url = '/test/_doc/1'
-    uri = elastic_server + data_url
-
-    res = requests.put(uri, json=json_data)
-    print(res.json())
 
 if __name__ == '__main__':
     consume_loop()
