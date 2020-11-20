@@ -1,0 +1,12 @@
+version: '2'
+services:
+  fluentd:
+    build:
+      context: ../fluentd/fluentd
+      dockerfile: Dockerfile
+    volumes:
+      - ../fluentd/fluentd:/apps
+    ports:
+      - 5170:5170
+    networks: 
+      - kafka
