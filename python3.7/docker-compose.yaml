@@ -1,0 +1,24 @@
+version: '2'
+  
+services:
+  log-generator:
+    build:
+      context: ../log-generator/
+      dockerfile: Dockerfile
+    container_name: log-generator
+    networks:
+      - kafka
+
+  analysis-module:
+    build:
+      context: ../log-analysis-module/
+      dockerfile: Dockerfile
+    container_name: analysis-module
+    networks:
+      - kafka
+      - elk
+
+networks:
+  test:
+    external:
+      name: kafka-docker-compose_test
