@@ -8,21 +8,13 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 
 # 로그 생성 #
 '''
-1. 정상데이터(1), 비정상데이터(2) 선택
-2. 유저 이름 입력
-3. logData.txt에 저장된 값을 가져온다.
-4. 정상데이터 경우 +-5 내에 랜덤으로 10개 생성 - 일단 안씀
-5. 비정상데이터 경우 1개만 생성
+1. 유저 이름 입력
+2. logData.txt에 저장된 값을 가져온다.
+3. 데이터에서 대략 +-5 내에 랜덤으로 1개 생성
 '''
 while(True) :
     print("Log Data 생성")
 
-    '''
-    print("정상데이터 = 1, 비정상 데이터 = 2")
-    sel = input()
-    '''
-
-#    if(sel == "1") : # 정상데이터 생성
     # 유저 이름 입력
     print("user name : ")
     userName = input()
@@ -58,20 +50,9 @@ while(True) :
 
     log = userName + "|" + logData
     print(log)
-    '''
-    elif(sel == "2") : # 비정상데이터 생성
-    print("user name : ")
-    userName = input()
-
-    logDataFile = open("log-generator\logData.txt", "r") # 읽기 모드로 파일을 읽음
-
-    else : # sel이 1, 2 외의 값을 가지면 처음으로 돌아감.
-    print("잘못된 값 입력")
-    continue
-    '''
 ##
 
-future = producer.send('log-topic', b'test')
+future = producer.send('log-topic', log)
 
 try:
     record_metadata = future.get(timeout=10)
