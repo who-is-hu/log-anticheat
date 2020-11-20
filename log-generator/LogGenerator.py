@@ -73,5 +73,7 @@ while(True) :
             print (record_metadata.partition)
             print (record_metadata.offset)
 
+            time.sleep(2)
+
     except Exception as e:
         print(e)
