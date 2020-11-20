@@ -1,7 +1,13 @@
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
+# 카프카 연결 설정 #
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
+##
+
+# 로그 생성 #
+
+##
 
 future = producer.send('log-topic', b'test')
 
