@@ -1,7 +1,7 @@
 version: '2'
 
 networks:
-  test:
+  kafka:
   
 services:
   zookeeper:
@@ -10,14 +10,14 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - test
+      - kafka
 
   kafka:
     image: wurstmeister/kafka:2.12-2.0.1
     container_name: kafka
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      # KAFKA_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT://kafka:9094
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -29,4 +29,4 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - test
+      - kafka

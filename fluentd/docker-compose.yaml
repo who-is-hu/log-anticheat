@@ -9,4 +9,4 @@ services:
     ports:
       - 5170:5170
     networks: 
-      - test
+      - kafka
