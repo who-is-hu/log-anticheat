@@ -49,28 +49,29 @@ while(True) :
         6. 목숨당 최대 킬수
         7. 시간
         '''
-        # log Data random
-        logDataSplit[2] = str(int(logDataSplit[2]) + random.randrange(-5,6))
-        logDataSplit[3] = str(int(logDataSplit[3]) + random.randrange(-2,3))
-        logDataSplit[4] = str(int(logDataSplit[4]) + random.randrange(-2,6))
-        if (int(logDataSplit[4]) < 0) : logDataSplit[4] = '0'
-        logDataSplit[1] = repr(round((int(logDataSplit[3])*100) / (int(logDataSplit[3]) + int(logDataSplit[4])), 2))
-        logDataSplit[5] = str(int(logDataSplit[5]) + random.randrange(-5,6))
-        logDataSplit[6] = str(int(logDataSplit[6]) + random.randrange(-5,6))
-        if (int(logDataSplit[6]) > int(logDataSplit[3])) : logDataSplit[6] = logDataSplit[3]
-        logData = "|".join(logDataSplit)
+        for i in range(0,10) :
+            # log Data random
+            logDataSplit[2] = str(int(logDataSplit[2]) + random.randrange(-5,6))
+            logDataSplit[3] = str(int(logDataSplit[3]) + random.randrange(-2,3))
+            logDataSplit[4] = str(int(logDataSplit[4]) + random.randrange(-2,6))
+            if (int(logDataSplit[4]) < 0) : logDataSplit[4] = '0'
+            logDataSplit[1] = repr(round((int(logDataSplit[3])*100) / (int(logDataSplit[3]) + int(logDataSplit[4])), 2))
+            logDataSplit[5] = str(int(logDataSplit[5]) + random.randrange(-5,6))
+            logDataSplit[6] = str(int(logDataSplit[6]) + random.randrange(-5,6))
+            if (int(logDataSplit[6]) > int(logDataSplit[3])) : logDataSplit[6] = logDataSplit[3]
+            logData = "|".join(logDataSplit)
 
-        log = userName + "|" + logData
-        print(log)
+            log = userName + "|" + logData
+            print(log)
 
-        print('send to kafka...')
-        future = producer.send('log-topic', log)
+            print('send to kafka...')
+            future = producer.send('log-topic', log)
 
-        record_metadata = future.get(timeout=10)
+            record_metadata = future.get(timeout=10)
 
-        print (record_metadata.topic)
-        print (record_metadata.partition)
-        print (record_metadata.offset)
+            print (record_metadata.topic)
+            print (record_metadata.partition)
+            print (record_metadata.offset)
 
     except Exception as e:
         print(e)
