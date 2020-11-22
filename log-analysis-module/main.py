@@ -4,21 +4,53 @@ from elasticsearch import helpers
 from clustering import ClusteringMgr
 import json
 import time
+import requests
+import os
+
+print('start analysis module')
+print('wait elastic...')
 
 # elasticsearch 서버 정보
-es = Elasticsearch("http://localhost:9200")
+es_server = os.getenv('ES_SERVER', "http://localhost:9200")
 index = "test"
+# elastic 연결을 기다림
+elastic_connection_check = False
+while elastic_connection_check == False:
+    try:
+        requests.get(es_server)
+        elastic_connection_check = True
+    except Exception as e:
+        print(e)
+    time.sleep(3)
 #es.info()
 
+es = Elasticsearch(es_server, timeout=30, max_retries=10, retry_on_timeout=True)
+# kafka_server = "localhost:9092"
+kafka_server = "kafka:9092"
+
 # kafka setup
-# bootstrap_servers = ["localhost:9092"]
-# topic_name = 'parsed-topic'
-# group_name = 'group1'
-# consumer = KafkaConsumer(topic_name, 
-#                         bootstrap_servers=bootstrap_servers, 
-#                         enable_auto_commit=False,
-#                         group_id=group_name
-#                         )
+bootstrap_servers = [kafka_server]
+topic_name = 'parsed-topic'
+group_name = 'group1'
+
+kafka_connection_check = False
+
+# 카프카 연결을 기다림
+while kafka_connection_check == False:
+    print('try connect kafka...')
+    try:
+        consumer = KafkaConsumer(topic_name,
+            bootstrap_servers=bootstrap_servers, 
+            enable_auto_commit=False,
+            group_id=group_name)
+        
+        kafka_connection_check = True
+    except Exception as e:
+        print(e)
+    
+    time.sleep(3)
+
+
 
 clusteringMgr = {}
 
@@ -62,10 +94,10 @@ def consume_loop():
 
 if __name__ == '__main__':
     # insert data to ES
-    # for i in range(10):
-    #     msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (i)
-    #     res = es.index(index=index, doc_type="_doc", body=msg)
-    #     print(res)    
+    for i in range(10):
+        msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (i)
+        res = es.index(index=index, doc_type="_doc", body=msg)
+        print(res)    
     
     # test clustering one new data
     clusteringMgr = ClusteringMgr(fetchAll(index))
@@ -77,4 +109,4 @@ if __name__ == '__main__':
     result = clusteringMgr.predictNewData(p_data)
     print('label of new data : %d' % (result))
 
-    #consume_loop()
+    consume_loop()

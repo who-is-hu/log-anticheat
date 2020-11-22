@@ -3,6 +3,7 @@ from kafka.errors import KafkaError
 import time
 import random
 import json
+import os
 
 kafka_connection_check = False
 print('start log generator')
@@ -52,11 +53,12 @@ while(True) :
         print("Log Data 생성")
 
         # 유저 이름 입력
-        print("user name : ")
-        userName = input()
+        # print("user name : ")
+        # userName = input()
 
         # logData.txt 읽기
-        logDataFile = open("log-generator\logData.txt", "r") # 읽기 모드로 파일을 읽음
+        logfiledir = os.getenv("LOG_FILE_DIR", "log-generator")
+        logDataFile = open(os.path.join(logfiledir, "logData.txt"), "r") # 읽기 모드로 파일을 읽음
         line = logDataFile.readlines() # 파일을 줄단위로 list로 저장
 
         # log Data 생성
@@ -78,8 +80,8 @@ while(True) :
         '''
         for i in range(0,10) :
             # log Data random create
-            logFormat['user']['uid'] = 'ID' + userName
-            logFormat['user']['name'] = userName
+            # logFormat['user']['uid'] = 'ID' + userName
+            # logFormat['user']['name'] = userName
             logFormat['user']['rank'] = int(logDataSplit[0])
             logFormat['round']['rid'] = logDataSplit[1]
             logFormat['round']['r_starttime'] = logDataSplit[2]
