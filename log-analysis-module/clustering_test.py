@@ -5,7 +5,7 @@ import numpy as np
 
 def sendToMailModule(data):
     return 0
-    
+
 X = np.array([
                 [1,2,1,2,1,2], 
                 [1,4,1,4,1,4],
