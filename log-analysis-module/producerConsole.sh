@@ -1,0 +1,1 @@
+sudo /usr/local/kafka/bin/kafka-console-producer.sh --topic parsed-topic --broker-list kafka:9092
