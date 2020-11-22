@@ -6,6 +6,8 @@ services:
       context: ../log-generator/
       dockerfile: Dockerfile
     container_name: log-generator
+    environment:
+      - LOG_FILE_DIR=./
     networks:
       - kafka
 
@@ -14,6 +16,8 @@ services:
       context: ../log-analysis-module/
       dockerfile: Dockerfile
     container_name: analysis-module
+    environment:
+      - ES_SERVER=http://elastic:9200
     networks:
       - kafka
       - elk

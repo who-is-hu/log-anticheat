@@ -5,13 +5,13 @@ from clustering import ClusteringMgr
 import json
 import time
 import requests
+import os
 
 print('start analysis module')
 print('wait elastic...')
 
 # elasticsearch 서버 정보
-# es_server = "http://localhost:9200"
-es_server = "http://elastic:9200"
+es_server = os.getenv('ES_SERVER', "http://localhost:9200")
 index = "test"
 # elastic 연결을 기다림
 elastic_connection_check = False
