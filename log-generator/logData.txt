@@ -1,1 +1,2 @@
-round|50|20|10|5|4|6|2020-10-10 13:00:00
+rank|rid|startTime|endTime|shot_acc|headShot_rate|kill|death|assist|maxKillStreak|time
+1|round|2020-10-10 12:00:00|2020-10-10 13:00:00|50|20|10|10|4|6|2020-10-10 13:00:00
