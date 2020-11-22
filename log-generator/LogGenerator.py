@@ -2,7 +2,6 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import time
 import random
-import json
 
 kafka_connection_check = False
 print('start log generator')
@@ -55,10 +54,10 @@ while(True) :
             logDataSplit[2] = str(int(logDataSplit[2]) + random.randrange(-5,6))
             logDataSplit[3] = str(int(logDataSplit[3]) + random.randrange(-2,3))
             logDataSplit[4] = str(int(logDataSplit[4]) + random.randrange(-2,6))
-            logDataSplit[1] = str(int(logDataSplit[1]) + random.randrange(-5,6))
+            if (int(logDataSplit[4]) < 0) : logDataSplit[4] = '0'
+            logDataSplit[1] = repr(round((int(logDataSplit[3])*100) / (int(logDataSplit[3]) + int(logDataSplit[4])), 2))
             logDataSplit[5] = str(int(logDataSplit[5]) + random.randrange(-5,6))
             logDataSplit[6] = str(int(logDataSplit[6]) + random.randrange(-5,6))
-            if (int(logDataSplit[4]) < 0) : logDataSplit[4] = '0'
             if (int(logDataSplit[6]) > int(logDataSplit[3])) : logDataSplit[6] = logDataSplit[3]
             logData = "|".join(logDataSplit)
 
