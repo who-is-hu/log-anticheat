@@ -26,7 +26,7 @@ while elastic_connection_check == False:
 
 es = Elasticsearch(es_server, timeout=30, max_retries=10, retry_on_timeout=True)
 # kafka_server = "localhost:9092"
-kafka_server = "kafka:9092"
+kafka_server = os.getenv('KAFKA_SERVER', "localhost:9092")
 
 # kafka setup
 bootstrap_servers = [kafka_server]
