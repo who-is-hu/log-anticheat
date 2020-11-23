@@ -18,11 +18,15 @@ services:
     container_name: analysis-module
     environment:
       - ES_SERVER=http://elastic:9200
+      - KAFKA_SERVER=kafka:9092
     networks:
       - kafka
       - elk
 
 networks:
-  test:
+  elk:
     external:
-      name: kafka-docker-compose_test
+      name: kafka-docker-compose_elk
+  kafka:
+    external:
+      name: kafka-docker-compose_kafka
