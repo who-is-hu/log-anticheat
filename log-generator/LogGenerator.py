@@ -21,9 +21,9 @@ while kafka_connection_check == False:
 
 # 로그 생성 #
 '''
-1. 유저 이름 입력
-2. logData.txt에 저장된 값을 가져온다.
-3. 데이터에서 대략 +-5 내에 랜덤으로 1개 생성
+0. 유저 이름과 아이디는 임의로 들어감
+1. logData.txt에 저장된 값을 가져온다.
+2. 데이터에서 대략 +-5 내에 랜덤으로 1개 생성
 '''
 # log data Json format
 logFormat = {
