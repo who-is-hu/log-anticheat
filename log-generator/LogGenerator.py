@@ -4,7 +4,7 @@ import time
 import random
 import json
 import os
-
+#'''
 kafka_connection_check = False
 print('start log generator')
 
@@ -12,13 +12,15 @@ print('start log generator')
 while kafka_connection_check == False:
     print('try connect kafka...')
     try:
-        producer = KafkaProducer(bootstrap_servers=['kafka:9092'])
+        producer = KafkaProducer(bootstrap_servers=['kafka:9092'], 
+                                key_serializer=None,
+                                value_serializer=lambda x: json.dumps(x).encode('utf-8'))
         kafka_connection_check = True
     except Exception as e:
         print(e)
 
     time.sleep(3)
-
+#'''
 # 로그 생성 #
 '''
 0. 유저 이름과 아이디는 임의로 들어감
@@ -75,8 +77,8 @@ while(True) :
     '''
     for i in range(0,10) :
         # log Data random create
-        logFormat['user']['uid'] = 'ID0' + i
-        logFormat['user']['name'] = 'Name0' + i
+        logFormat['user']['uid'] = 'ID0' + str(i)
+        logFormat['user']['name'] = 'Name0' + str(i)
         logFormat['user']['rank'] = int(logDataSplit[0])
         logFormat['round']['rid'] = logDataSplit[1]
         logFormat['round']['r_starttime'] = logDataSplit[2]
@@ -96,27 +98,25 @@ while(True) :
         if (logFormat['assist'] < 0) : logFormat['assist'] = 0
         if (logFormat['max_kill_streak'] > logFormat['kill']) : logFormat['max_kill_streak'] = logFormat['kill']
         
-        logJson = json.dumps(logFormat)
+        logJson = json.dumps(logFormat).encode('utf-8')
         print(logJson)
-        print(type(logJson))
-
-    # 카프카 실행
+        print("")
+    #'''
+    # 카프카에 Log 전달
         print('send to kafka...')
-    try:                    
-            future = producer.send('log-topic', logJson)
-
+        future = producer.send('log-topic', value=logFormat)
+        try:                    
             record_metadata = future.get(timeout=10)
 
-            print (record_metadata.topic)
-            print (record_metadata.partition)
-            print (record_metadata.offset)
+            print("Success send to Kafka")
+            print(record_metadata.topic)
+            print(record_metadata.partition)
+            print(record_metadata.offset)
 
-            time.sleep(2)
-            
-    except Exception as e:
-        print(e)
-
-    time.sleep(3)
-
-# 계속되는 실행을 막기위해 5분에 한번씩 10번 보냄
-time.sleep(300)
+        except KafkaError:
+            print("Falied send to Kafka")
+            print("")
+        time.sleep(1)
+    #'''
+    # 계속되는 실행을 막기위해 30초에 한번씩 10번 보냄  
+    time.sleep(30)
