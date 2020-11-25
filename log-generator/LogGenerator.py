@@ -98,8 +98,7 @@ while(True) :
         if (logFormat['assist'] < 0) : logFormat['assist'] = 0
         if (logFormat['max_kill_streak'] > logFormat['kill']) : logFormat['max_kill_streak'] = logFormat['kill']
         
-        logJson = json.dumps(logFormat).encode('utf-8')
-        print(logJson)
+        print(logFormat)
         print("")
     #'''
     # 카프카에 Log 전달
@@ -116,7 +115,7 @@ while(True) :
         except KafkaError:
             print("Falied send to Kafka")
             print("")
-        time.sleep(1)
+        #time.sleep(1)
     #'''
     # 계속되는 실행을 막기위해 30초에 한번씩 10번 보냄  
     time.sleep(30)
