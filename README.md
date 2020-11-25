@@ -29,15 +29,15 @@
 ### 프로젝트 실행
 ```bash
 # kafka, fluentd, elasticsearch, kibana 실행
-./start up kfek
+./start.sh up kfek
 # 로그 생성기, 로그 분석 모듈 실행
-./start up log
+./start.sh up log
 ```
 
 ### 프로젝트 종료
 ```bash
 # kafka, fluentd, elasticsearch, kibana 종료
-./start down kfek
+./start.sh down kfek
 # 로그 생성기, 로그 분석 모듈 종료
-./start down log
+./start.sh down log
 ```
