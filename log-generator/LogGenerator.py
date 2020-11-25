@@ -5,6 +5,7 @@ import random
 import json
 import os
 #'''
+kafka_server = os.getenv('KAFKA_SERVER', "localhost:9092")
 kafka_connection_check = False
 print('start log generator')
 
@@ -12,8 +13,9 @@ print('start log generator')
 while kafka_connection_check == False:
     print('try connect kafka...')
     try:
-        producer = KafkaProducer(bootstrap_servers=['kafka:9092'], 
+        producer = KafkaProducer(bootstrap_servers=[kafka_server], 
                                 key_serializer=None,
+                                retries=5,
                                 value_serializer=lambda x: json.dumps(x).encode('utf-8'))
         kafka_connection_check = True
     except Exception as e:

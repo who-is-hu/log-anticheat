@@ -94,11 +94,12 @@ def consume_loop():
 
 if __name__ == '__main__':
     # insert data to ES
-    # for i in range(10):
-    #     msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (i)
-    #     res = es.index(index=index, doc_type="_doc", body=msg)
-    #     print(res)    
+    for i in range(10):
+        msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (i)
+        res = es.index(index=index, doc_type="_doc", body=msg)
+        print(res)    
     
+    time.sleep(5)
     # # test clustering one new data
     clusteringMgr = ClusteringMgr(fetchAll(index))
     # print(clusteringMgr.kmeans.labels_)
@@ -107,5 +108,5 @@ if __name__ == '__main__':
     # p_data = [preprocess(dicto)] # convert 2d array
     # print(p_data)
     # result = clusteringMgr.predictNewData(p_data)
-    print('label of new data : %d' % (result))
+    # print('label of new data : %d' % (result))
     consume_loop()
