@@ -22,4 +22,9 @@ RUN buildDeps="sudo make gcc g++ libc-dev" \
 # USER fluent
 
 COPY fluent.conf /fluentd/etc/
+COPY fluent.conf /etc/td-agent/td-agent.conf
 COPY entrypoint.sh /bin/
+RUN chmod 755 /bin/entrypoint.sh
+EXPOSE 5140
+
+ENTRYPOINT ["fluentd", "-c", "/fluentd/etc/fluent.conf" ]
