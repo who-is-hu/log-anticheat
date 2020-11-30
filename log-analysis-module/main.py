@@ -113,6 +113,35 @@ def consume_loop(running_mode):
             print(e)
 
 
+def sendMail(_msg):
+    #####################
+
+    # 보내는 사람 정보
+    me = os.environ['EMAIL_ADDR']
+    my_password = os.environ['EMAIL_PW']
+
+    # 로그인하기
+    s = smtplib.SMTP_SSL('smtp.gmail.com')
+    s.login(me, my_password)
+
+    # 받는 사람 정보
+    email = os.environ['EMAIL_RECV']
+
+    # 메일 기본 정보 설정
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "[Alarm]"
+    msg['From'] = me
+    msg['To'] = email
+
+    # 메일 내용 쓰기
+    part2 = MIMEText(_msg, 'plain')
+    msg.attach(part2)
+
+    # 메일 보내고 서버 끄기
+    s.sendmail(me, email, msg.as_string())
+    s.quit()
+    #####################
+
 if __name__ == '__main__':
     # 데이터 분석 모드
     if es.indices.exists(index="source"):
