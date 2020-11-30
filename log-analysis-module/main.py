@@ -82,6 +82,7 @@ def fetchAll(_index):
 
 def consume_loop(running_mode):
     print("RUNNING :" + running_mode)
+    sendMail("consume_loop start")
     while True:
         try:
             msg_pack = consumer.poll(timeout_ms=500)
@@ -95,10 +96,8 @@ def consume_loop(running_mode):
                         scaled_data = StandardScaler().fit_transform(
                             [preprocess(dict_data)])
                         result = clusteringMgr.predictNewData(scaled_data)
-                        # result = clusteringMgr.predictNewData(
-                        #    [preprocess(dict_data)])[0]
-                        # if result == 0:
-                        #    send to alertmodule
+                        if result == 0:
+                            sendMail(message)
                         dict_data.update({'label': result})
                         print('predict done')
                         jsonformat = json.dumps(dict_data)
