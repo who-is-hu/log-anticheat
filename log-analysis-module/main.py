@@ -12,7 +12,7 @@ print('start analysis module')
 print('wait elastic...')
 # elasticsearch 서버 정보
 es_server = os.getenv('ES_SERVER', "http://localhost:9200")
-index = "test"
+index = ""
 # elastic 연결을 기다림
 elastic_connection_check = False
 while elastic_connection_check == False:
@@ -58,14 +58,14 @@ def preprocess(dict_obj):
     dict_obj.pop('user')
     dict_obj.pop('rid')
     dict_obj.pop('time')
-    print(dict_obj)
+    # print(dict_obj)
     return list(dict_obj.values())
 
 
 def fetchAll(_index):
     res = es.search(index=_index, body={
         "query": {"match_all": {}}
-    })
+    }, size=1000)
     docs = []
     for record in res['hits']['hits']:
         valueList = preprocess(record['_source'])
@@ -75,7 +75,8 @@ def fetchAll(_index):
     return docs
 
 
-def consume_loop():
+def consume_loop(running_mode):
+    print("RUNNING :" + running_mode)
     while True:
         try:
             msg_pack = consumer.poll(timeout_ms=500)
@@ -84,16 +85,18 @@ def consume_loop():
                     print("===================================")
                     message = msg.value
                     print(message)
-                    dict_data = json.loads(message)
-                    result = clusteringMgr.predictNewData(
-                        [preprocess(dict_data)])[0]
-                    # if result == 0:
-                    #    send to alertmodule
-                    dict_data.update({'label': result})
-                    print('predict done')
-                    print(dict_data)
-                    jsonformat = json.dumps(dict_data)
-                    print(jsonformat)
+                    if running_mode == "DATA_ANALYSIS_MODE":
+                        dict_data = json.loads(message)
+                        result = clusteringMgr.predictNewData(
+                            [preprocess(dict_data)])[0]
+                        # if result == 0:
+                        #    send to alertmodule
+                        dict_data.update({'label': result})
+                        print('predict done')
+                        jsonformat = json.dumps(dict_data)
+                    else:
+                        print('just send data for collect')
+                        jsonformat = message
                     res = es.index(index=index, doc_type="_doc",
                                    body=jsonformat)
                     print(res)
@@ -104,21 +107,17 @@ def consume_loop():
 
 
 if __name__ == '__main__':
-    # insert data to ES
-    # for i in range(10):
-    #     msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (
-    #         i)
-    #     res = es.index(index=index, doc_type="_doc", body=msg)
-    #     print(res)
-    # time.sleep(5)
-
-    # # test clustering one new data
-    clusteringMgr = ClusteringMgr(fetchAll(index))
-    # print(clusteringMgr.kmeans.labels_)
-    # msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":999,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}'
-    # dicto = json.loads(msg)
-    # p_data = [preprocess(dicto)] # convert 2d array
-    # print(p_data)
-    # result = clusteringMgr.predictNewData(p_data)
-    # print('label of new data : %d' % (result))
-    consume_loop()
+    # 데이터 분석 모드
+    if es.indices.exists(index="source"):
+        docs = fetchAll("source")
+        for i in docs:
+            print(i)
+        index = "result"
+        mode = "DATA_ANALYSIS_MODE"
+        clusteringMgr = ClusteringMgr(docs)
+    # 데이터 수집 모드
+    else:
+        index = "source"
+        es.indices.create(index=index)
+        mode = "DATA_COLLECT_MODE"
+    consume_loop(mode)
