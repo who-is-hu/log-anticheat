@@ -1,6 +1,6 @@
 from kafka import KafkaConsumer
 from elasticsearch import Elasticsearch
-from elasticsearch import helpers
+from sklearn.preprocessing import StandardScaler
 from clustering import ClusteringMgr
 import json
 import time
@@ -58,7 +58,7 @@ def preprocess(dict_obj):
     dict_obj.pop('user')
     dict_obj.pop('rid')
     dict_obj.pop('time')
-    # print(dict_obj)
+
     return list(dict_obj.values())
 
 
@@ -70,8 +70,9 @@ def fetchAll(_index):
     for record in res['hits']['hits']:
         valueList = preprocess(record['_source'])
         docs.append(valueList)
-    # for d in docs:
-    #     print(d)
+    docs = StandardScaler().fit_transform(docs)
+    for d in docs:
+        print(d)
     return docs
 
 
@@ -87,8 +88,11 @@ def consume_loop(running_mode):
                     print(message)
                     if running_mode == "DATA_ANALYSIS_MODE":
                         dict_data = json.loads(message)
-                        result = clusteringMgr.predictNewData(
-                            [preprocess(dict_data)])[0]
+                        scaled_data = StandardScaler().fit_transform(
+                            [preprocess(dict_data)])
+                        result = clusteringMgr.predictNewData(scaled_data)
+                        # result = clusteringMgr.predictNewData(
+                        #    [preprocess(dict_data)])[0]
                         # if result == 0:
                         #    send to alertmodule
                         dict_data.update({'label': result})
@@ -118,6 +122,12 @@ if __name__ == '__main__':
     # 데이터 수집 모드
     else:
         index = "source"
-        es.indices.create(index=index)
+        if not es.indices.exists(index=index):
+            es.indices.create(index=index)
         mode = "DATA_COLLECT_MODE"
-    consume_loop(mode)
+
+    # index = "source"
+    # if not es.indices.exists(index=index):
+    #     es.indices.create(index=index)
+    # mode = "DATA_COLLECT_MODE"
+    # consume_loop(mode)

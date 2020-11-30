@@ -10,9 +10,20 @@ class ClusteringMgr:
 
     def createClusteringModel(self, X):
         print("create clustering model...")
-        # print(X)
         dataset = np.array(X)
         self.kmeans = KMeans(n_clusters=2, random_state=0).fit(dataset)
+
+        # test for clustering accuracy
+        n1 = 0
+        n2 = 0
+        for i in self.kmeans.labels_:
+            if i == 0:
+                n1 += 1
+            else:
+                n2 += 1
+        print("n1", n1)
+        print("n2", n2)
+        ##############################
         print("Done: clustering model created")
 
     # 새로운 data의 소속 군집 반환
