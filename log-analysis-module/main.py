@@ -7,6 +7,10 @@ import time
 import requests
 import os
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 print('start analysis module')
 
 print('wait elastic...')
