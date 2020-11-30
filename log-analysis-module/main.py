@@ -58,14 +58,14 @@ def preprocess(dict_obj):
     dict_obj.pop('user')
     dict_obj.pop('rid')
     dict_obj.pop('time')
-    print(dict_obj)
+    # print(dict_obj)
     return list(dict_obj.values())
 
 
 def fetchAll(_index):
     res = es.search(index=_index, body={
         "query": {"match_all": {}}
-    })
+    }, size=1000)
     docs = []
     for record in res['hits']['hits']:
         valueList = preprocess(record['_source'])
@@ -110,6 +110,8 @@ if __name__ == '__main__':
     # 데이터 분석 모드
     if es.indices.exists(index="source"):
         docs = fetchAll("source")
+        for i in docs:
+            print(i)
         index = "result"
         mode = "DATA_ANALYSIS_MODE"
         clusteringMgr = ClusteringMgr(docs)
@@ -119,10 +121,3 @@ if __name__ == '__main__':
         es.indices.create(index=index)
         mode = "DATA_COLLECT_MODE"
     consume_loop(mode)
-    # insert data to ES
-    # for i in range(10):
-    #     msg = '{"shot_acc":0.67,"headshot_rate":0.33,"kill":%d,"death":3,"assist":4,"max_kill_streak":7,"time":"2000-10-01 13:00:00","rid":"rid01","user":"uid01"}' % (
-    #         i)
-    #     res = es.index(index=index, doc_type="_doc", body=msg)
-    #     print(res)
-    # time.sleep(5)

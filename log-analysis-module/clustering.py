@@ -10,7 +10,7 @@ class ClusteringMgr:
 
     def createClusteringModel(self, X):
         print("create clustering model...")
-        print(X)
+        # print(X)
         dataset = np.array(X)
         self.kmeans = KMeans(n_clusters=2, random_state=0).fit(dataset)
         print("Done: clustering model created")
