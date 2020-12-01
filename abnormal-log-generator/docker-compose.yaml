@@ -12,9 +12,6 @@ services:
       - kafka
 
 networks:
-  elk:
-    external:
-      name: kafka-docker-compose_elk
   kafka:
     external:
       name: kafka-docker-compose_kafka
