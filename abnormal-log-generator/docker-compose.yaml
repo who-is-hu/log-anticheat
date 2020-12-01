@@ -1,0 +1,20 @@
+version: '2'
+services:
+  abnormal-log-generator:
+    build:
+      context: ../abnormal-log-generator/abnormal-log-generator
+      dockerfile: Dockerfile
+    container_name: abnormal-log-generator
+    environment: 
+      - LOG_FILE_DIR=./
+      - KAFKA_SERVER=kafka:9092
+    networks: 
+      - kafka
+
+networks:
+  elk:
+    external:
+      name: kafka-docker-compose_elk
+  kafka:
+    external:
+      name: kafka-docker-compose_kafka
