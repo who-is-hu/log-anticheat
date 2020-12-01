@@ -40,6 +40,29 @@ down() {
     fi
 }
 
+abnormalup() {
+    echo "start abnormal-log-generator..."
+
+    if [ $1 == "log" ]; then
+        set -x
+        docker-compose \
+            -f abnormal-log-generator/docker-compose.yml \
+            up -d --build
+        set +x
+    fi
+}
+
+abnormaldown() {
+    echo "down abnormal-log-generator..."
+
+    if [ $1 == "log" ]; then
+        set -x
+        docker-compose \
+            -f abnormal-log-generator/docker-compose.yml \
+            down --volume
+        set +x
+    fi
+}
 
 if [ $# -ne 2 ]; then
     exit 0
@@ -49,4 +72,8 @@ if [ $1 == "up" ]; then
     up $2
 elif [ $1 == "down" ]; then
     down $2
+elif [ $1 == 'abnormalup' ]; then
+    abnormalup $2
+elif [ $1 == 'abnormaldown' ]; then
+    abnormaldown $2
 fi
