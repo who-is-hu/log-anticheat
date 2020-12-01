@@ -1,4 +1,3 @@
-
 @echo off
 
 If  %1 == up goto:up
@@ -19,10 +18,12 @@ goto:eof
   docker-compose -f python3.7/docker-compose.yaml up -d --build
 goto:eof
 
-:abnormal
+:abnormalup
   echo "start abnormal-log-generator..."
   docker-compose -f abnormal-log-generator/docker-compose.yaml up -d --build
+goto:eof
 
 :abnormaldown
   echo "down abnormal-log-generator..."
   docker-compose -f abnormal-log-generator/docker-compose.yaml down --volume
+goto:eof
