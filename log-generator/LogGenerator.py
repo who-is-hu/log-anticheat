@@ -94,15 +94,16 @@ while(True) :
         logFormat['round']['rid'] = logDataSplit[1]
         logFormat['round']['r_starttime'] = logDataSplit[2]
         logFormat['round']['r_endtime'] = logDataSplit[3]
-        logFormat['shot_acc'] = round(float(logDataSplit[4]) + (float(logDataSplit[4]) * random.uniform(-0.15, 0.1)), 2)
-        logFormat['headshot_rate'] = round(float(logDataSplit[5]) + (float(logDataSplit[5]) * random.uniform(-0.15, 0.1)), 2)
-        logFormat['kill'] = int(logDataSplit[6]) + round(int(logDataSplit[6]) * random.uniform(-0.25, 0.15))
-        logFormat['death'] = int(logDataSplit[7]) + round(int(logDataSplit[7]) * random.uniform(-0.25, 0.15))
-        logFormat['assist'] = int(logDataSplit[8]) + round(int(logDataSplit[8]) * random.uniform(-0.25, 0.15))
-        logFormat['max_kill_streak'] = int(logDataSplit[9]) + round(int(logDataSplit[9]) * random.uniform(-0.25, 0.15))
+        logFormat['shot_acc'] = round(float(logDataSplit[4]) + (float(logDataSplit[4]) * random.uniform(-0.2, 0.15)), 2)
+        logFormat['headshot_rate'] = round(float(logDataSplit[5]) + (float(logDataSplit[5]) * random.uniform(-0.2, 0.15)), 2)
+        logFormat['kill'] = int(logDataSplit[6]) + round(int(logDataSplit[6]) * random.uniform(-0.4, 0.4))
+        logFormat['death'] = int(logDataSplit[7]) + round(int(logDataSplit[7]) * random.uniform(-0.4, 0.4))
+        logFormat['assist'] = int(logDataSplit[8]) + round(int(logDataSplit[8]) * random.uniform(-0.4, 0.4))
+        logFormat['max_kill_streak'] = int(logDataSplit[9]) + round(int(logDataSplit[9]) * random.uniform(-0.3, 0.3))
         logFormat['time'] = logDataSplit[10]
 
         # random data handling
+        ''' 안씀
         # abnormal data
         if logDataSplit[0] == str(i) : 
             logFormat['shot_acc'] = round(random.uniform(0.8, 1.0), 2)
@@ -110,15 +111,15 @@ while(True) :
             logFormat['kill'] = round(int(logDataSplit[6]) * 1.5)
             logFormat['death'] = round(int(logDataSplit[7]) / 2)
             logFormat['max_kill_streak'] = round(logFormat['kill'] * random.uniform(0.8, 1.0))
-
+        '''
         # normal data
-        else :
-            if logFormat['shot_acc'] < 0.0 : logFormat['shot_acc'] = 0.0
-            if logFormat['headshot_rate'] < 0.0 : logFormat['headshot_rate'] = 0.0
-            if logFormat['kill'] < 0 : logFormat['kill'] = 0
-            if logFormat['death'] < 0 : logFormat['death'] = 0
-            if logFormat['assist'] < 0 : logFormat['assist'] = 0
-            if logFormat['max_kill_streak'] > logFormat['kill'] : logFormat['max_kill_streak'] = logFormat['kill']
+        #else :
+        if logFormat['shot_acc'] < 0.0 : logFormat['shot_acc'] = 0.0
+        if logFormat['headshot_rate'] < 0.0 : logFormat['headshot_rate'] = 0.0
+        if logFormat['kill'] < 0 : logFormat['kill'] = 0
+        if logFormat['death'] < 0 : logFormat['death'] = 0
+        if logFormat['assist'] < 0 : logFormat['assist'] = 0
+        if logFormat['max_kill_streak'] > logFormat['kill'] : logFormat['max_kill_streak'] = logFormat['kill']
         
         print(logFormat)
         print("")
