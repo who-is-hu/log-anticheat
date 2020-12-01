@@ -97,7 +97,7 @@ def consume_loop(running_mode):
                             [preprocess(dict_data)])
                         result = clusteringMgr.predictNewData(scaled_data)
                         if result == 0:
-                            sendMail(message)
+                            sendMail(message.decode('utf-8'))
                         dict_data.update({'label': result})
                         print('predict done')
                         jsonformat = json.dumps(dict_data)
