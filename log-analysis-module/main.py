@@ -74,7 +74,7 @@ def fetchAll(_index):
     for record in res['hits']['hits']:
         valueList = preprocess(record['_source'])
         docs.append(valueList)
-    docs = StandardScaler().fit_transform(docs)
+    # docs = StandardScaler().fit_transform(docs)
     for d in docs:
         print(d)
     return docs
@@ -93,8 +93,11 @@ def consume_loop(running_mode):
                     print(message)
                     if running_mode == "DATA_ANALYSIS_MODE":
                         dict_data = json.loads(message)
-                        scaled_data = StandardScaler().fit_transform(
-                            [preprocess(dict_data)])
+                        scaled_data = []
+                        scaled_data.append(preprocess(dict_data))
+                        # scaled_data = StandardScaler().fit_transform(
+                        #     scaled_data)
+                        print(scaled_data)
                         result = clusteringMgr.predictNewData(scaled_data)
                         if result == 0:
                             sendMail(message.decode('utf-8'))
@@ -165,4 +168,4 @@ if __name__ == '__main__':
     # if not es.indices.exists(index=index):
     #     es.indices.create(index=index)
     # mode = "DATA_COLLECT_MODE"
-    # consume_loop(mode)
+    consume_loop(mode)
