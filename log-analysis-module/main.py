@@ -1,7 +1,7 @@
 from kafka import KafkaConsumer
 from elasticsearch import Elasticsearch
-from sklearn.preprocessing import StandardScaler
 from clustering import ClusteringMgr
+
 import json
 import time
 import requests
@@ -55,6 +55,7 @@ while kafka_connection_check == False:
 print('kafka connected')
 
 clusteringMgr = {}
+abnormalLabel = -1
 
 
 def preprocess(dict_obj):
@@ -74,15 +75,12 @@ def fetchAll(_index):
     for record in res['hits']['hits']:
         valueList = preprocess(record['_source'])
         docs.append(valueList)
-    # docs = StandardScaler().fit_transform(docs)
-    for d in docs:
-        print(d)
     return docs
 
 
 def consume_loop(running_mode):
     print("RUNNING :" + running_mode)
-    sendMail("consume_loop start")
+    #sendMail("consume_loop start")
     while True:
         try:
             msg_pack = consumer.poll(timeout_ms=500)
@@ -93,15 +91,15 @@ def consume_loop(running_mode):
                     print(message)
                     if running_mode == "DATA_ANALYSIS_MODE":
                         dict_data = json.loads(message)
-                        scaled_data = []
-                        scaled_data.append(preprocess(dict_data))
-                        # scaled_data = StandardScaler().fit_transform(
-                        #     scaled_data)
-                        print(scaled_data)
-                        result = clusteringMgr.predictNewData(scaled_data)
-                        if result == 0:
-                            sendMail(message.decode('utf-8'))
+                        list_data = preprocess(dict_data)
+                        pca_data = clusteringMgr.getPCfrom1dArray(list_data)
+                        result = clusteringMgr.predictNewData(pca_data)
+                        # if result == abnormalLabel:
+                        #    sendMail(message.decode('utf-8'))
+                        print('result % d' % (result))
                         dict_data.update({'label': result})
+                        dict_data.update({'pca1': pca_data[0]})
+                        dict_data.update({'pca2': pca_data[1]})
                         print('predict done')
                         jsonformat = json.dumps(dict_data)
                     else:
@@ -150,22 +148,23 @@ def sendMail(_msg):
 
 if __name__ == '__main__':
     # 데이터 분석 모드
-    if es.indices.exists(index="source"):
+    mode = "DATA_ANALYSIS_MODE"
+
+    if mode == "DATA_ANALYSIS_MODE":
+        if not es.indices.exists(index="source"):
+            print('ERROR: source index not exist')
+            exit()
         docs = fetchAll("source")
         for i in docs:
             print(i)
         index = "result"
-        mode = "DATA_ANALYSIS_MODE"
         clusteringMgr = ClusteringMgr(docs)
+        abnormalLabel = clusteringMgr.getAbnormalLabel()
+
     # 데이터 수집 모드
-    else:
+    elif mode == "DATA_COLLECT_MODE":
         index = "source"
         if not es.indices.exists(index=index):
             es.indices.create(index=index)
-        mode = "DATA_COLLECT_MODE"
 
-    # index = "source"
-    # if not es.indices.exists(index=index):
-    #     es.indices.create(index=index)
-    # mode = "DATA_COLLECT_MODE"
     consume_loop(mode)
