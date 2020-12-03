@@ -94,8 +94,8 @@ def consume_loop(running_mode):
                         list_data = preprocess(dict_data)
                         pca_data = clusteringMgr.getPCfrom1dArray(list_data)
                         result = clusteringMgr.predictNewData(pca_data)
-                        # if result == abnormalLabel:
-                        #    sendMail(message.decode('utf-8'))
+                        if result == abnormalLabel:
+                           sendMail(message.decode('utf-8'))
                         print('result % d' % (result))
                         dict_data.update({'label': result})
                         dict_data.update({'pca1': pca_data[0]})
