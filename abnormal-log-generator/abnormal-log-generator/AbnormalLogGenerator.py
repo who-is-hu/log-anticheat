@@ -125,5 +125,5 @@ while(True) :
             print("")
         #time.sleep(1)
     #'''
-    # 계속되는 실행을 막기위해 30초에 한번씩 10번 보냄  
-    time.sleep(30)
+    # 계속되는 실행을 막기위해 45초에 한번씩 10번 보냄  
+    time.sleep(45)
