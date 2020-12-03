@@ -9,7 +9,7 @@ up() {
             -f kafka-docker-compose/docker-compose.yml \
             -f elastic-kibana/docker-compose.yaml \
             -f fluentd/docker-compose.yaml \
-            up -d --build\
+            up -d --build
         set +x
     elif [ $1 == "log" ]; then
         set -x
@@ -21,7 +21,7 @@ up() {
         echo "start abnormal-log-generator..."
         set -x
         docker-compose \
-            -f abnormal-log-generator/docker-compose.yml \
+            -f abnormal-log-generator/docker-compose.yaml \
             up -d --build
         set +x
     fi    
@@ -48,7 +48,7 @@ down() {
         echo "down abnormal-log-generator..."
         set -x
         docker-compose \
-            -f abnormal-log-generator/docker-compose.yml \
+            -f abnormal-log-generator/docker-compose.yaml \
             down --volume
         set +x
     fi
