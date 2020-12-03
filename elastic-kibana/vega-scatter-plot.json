@@ -1,85 +1,114 @@
 {
-    "$schema": "https://vega.github.io/schema/vega/v5.json",
-    "description": "A basic scatter plot example depicting automobile statistics.",
-    "padding": 5,
-    "data": {
-        "name": "source",
-        "url": {
-          "index":"result",
-          "body": {
-            "size": 10000,
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A basic scatter plot example depicting automobile statistics.",
+  "padding": 5,
+  "data": {
+    "name": "source",
+    "url": {
+      "index": "result",
+      "body": {
+        "size": 10000,
+      }
+    },
+    "format": {
+      "property": "hits.hits"
+    }
+  },
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "round": true,
+      "nice": true,
+      "zero": true,
+      "domain": {
+        "data": "source",
+        "field": "_source.pca1"
+      },
+      "range": "width"
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "round": true,
+      "nice": true,
+      "zero": true,
+      "domain": {
+        "data": "source",
+        "field": "_source.pca2"
+      },
+      "range": "height"
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "grid": true,
+      "domain": false,
+      "orient": "bottom",
+      "tickCount": 5,
+      "title": "pca1"
+    },
+    {
+      "scale": "y",
+      "grid": true,
+      "domain": false,
+      "orient": "left",
+      "titlePadding": 5,
+      "title": "pca2"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "from": {
+        "data": "source"
+      },
+      "encode": {
+        "enter": {
+          "align": {
+            "value": "center"
+          },
+          "baseline": {
+            "value": "bottom"
+          },
+          "fill": {
+            "value": "#333"
           }
         },
-        "format": { "property": "hits.hits" }
-    },
-  
-    "scales": [
-      {
-        "name": "x",
-        "type": "linear",
-        "round": true,
-        "nice": true,
-        "zero": true,
-        "domain": {"data": "source", "field": "_source.shot_acc"},
-        "range": "width"
-      },
-      {
-        "name": "y",
-        "type": "linear",
-        "round": true,
-        "nice": true,
-        "zero": true,
-        "domain": {"data": "source", "field": "_source.headshot_rate"},
-        "range": "height"
-      }
-    ],
-  
-    "axes": [
-      {
-        "scale": "x",
-        "grid": true,
-        "domain": false,
-        "orient": "bottom",
-        "tickCount": 5,
-        "title": "shot_acc"
-      },
-      {
-        "scale": "y",
-        "grid": true,
-        "domain": false,
-        "orient": "left",
-        "titlePadding": 5,
-        "title": "headshot_rate"
-      }
-    ],
-  
-    "marks": [
-      {
-        "name": "marks",
-        "type": "symbol",
-        "from": {"data": "source"},
-        "encode": {
-          "enter": {
-            "align": {"value": "center"},
-            "baseline": {"value": "bottom"},
-            "fill": {"value": "#333"}
+        "update": {
+          "x": {
+            "scale": "x",
+            "field": "_source.pca1"
           },
-          "update": {
-            "x": {"scale": "x", "field": "_source.shot_acc"},
-            "y": {"scale": "y", "field": "_source.headshot_rate"},
-            "shape": {"value": "circle"},
-            "strokeWidth": {"value": 2},
-            "opacity": {"value": 0.5},
-            "stroke": {"value": "#4682b4"},
-            "fill": [
-              {
-                "test":"if(datum._source.label==1, true, false)",
-                "value":"red"
-              },
-              {"value": "green"}
-            ]
-          }
+          "y": {
+            "scale": "y",
+            "field": "_source.pca2"
+          },
+          "shape": {
+            "value": "circle"
+          },
+          "strokeWidth": {
+            "value": 2
+          },
+          "opacity": {
+            "value": 0.5
+          },
+          "stroke": {
+            "value": "#4682b4"
+          },
+          "fill": [
+            {
+              "test": "if(datum._source.label==1, true, false)",
+              "value": "red"
+            },
+            {
+              "value": "green"
+            }
+          ]
         }
       }
-    ]
-  }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+ docker-compose -f abnormal-log-generator/docker-compose.yaml up -d --build
