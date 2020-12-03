@@ -150,7 +150,7 @@ if __name__ == '__main__':
     # 데이터 분석 모드
     mode = "DATA_ANALYSIS_MODE"
 
-    if mode == "DATA_ANALYSIS_MODE":
+    if es.indices.exists(index="source"):
         if not es.indices.exists(index="source"):
             print('ERROR: source index not exist')
             exit()
@@ -162,9 +162,9 @@ if __name__ == '__main__':
         abnormalLabel = clusteringMgr.getAbnormalLabel()
 
     # 데이터 수집 모드
-    elif mode == "DATA_COLLECT_MODE":
+    else :
+        mode = "DATA_COLLECT_MODE"
         index = "source"
-        if not es.indices.exists(index=index):
-            es.indices.create(index=index)
+        es.indices.create(index=index)
 
     consume_loop(mode)
